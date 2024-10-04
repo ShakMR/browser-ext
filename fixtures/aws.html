@@ -1,0 +1,624 @@
+<html><head>
+<title>Amazon Web Services Sign-In</title>
+<meta name="viewport" content="width=device-width">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+
+
+
+
+
+
+
+<script async="" src="/static/js/awsc-panorama.js"></script><script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" nonce="">
+  if(typeof JSON!=="object"){JSON={};
+}(function(){function f(n){return n<10?"0"+n:n;
+}if(typeof Date.prototype.toJSON!=="function"){Date.prototype.toJSON=function(key){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+f(this.getUTCMonth()+1)+"-"+f(this.getUTCDate())+"T"+f(this.getUTCHours())+":"+f(this.getUTCMinutes())+":"+f(this.getUTCSeconds())+"Z":null;
+};
+String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(key){return this.valueOf();
+};
+}var cx=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,gap,indent,meta={"\b":"\\b","\t":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},rep;
+function quote(string){escapable.lastIndex=0;
+return escapable.test(string)?'"'+string.replace(escapable,function(a){var c=meta[a];
+return typeof c==="string"?c:"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4);
+})+'"':'"'+string+'"';
+}function str(key,holder){var i,k,v,length,mind=gap,partial,value=holder[key];
+if(value&&typeof value==="object"&&typeof value.toJSON==="function"){value=value.toJSON(key);
+}if(typeof rep==="function"){value=rep.call(holder,key,value);
+}switch(typeof value){case"string":return quote(value);
+case"number":return isFinite(value)?String(value):"null";
+case"boolean":case"null":return String(value);
+case"object":if(!value){return"null";
+}gap+=indent;
+partial=[];
+if(Object.prototype.toString.apply(value)==="[object Array]"){length=value.length;
+for(i=0;
+i<length;
+i+=1){partial[i]=str(i,value)||"null";
+}v=partial.length===0?"[]":gap?"[\n"+gap+partial.join(",\n"+gap)+"\n"+mind+"]":"["+partial.join(",")+"]";
+gap=mind;
+return v;
+}if(rep&&typeof rep==="object"){length=rep.length;
+for(i=0;
+i<length;
+i+=1){if(typeof rep[i]==="string"){k=rep[i];
+v=str(k,value);
+if(v){partial.push(quote(k)+(gap?": ":":")+v);
+}}}}else{for(k in value){if(Object.prototype.hasOwnProperty.call(value,k)){v=str(k,value);
+if(v){partial.push(quote(k)+(gap?": ":":")+v);
+}}}}v=partial.length===0?"{}":gap?"{\n"+gap+partial.join(",\n"+gap)+"\n"+mind+"}":"{"+partial.join(",")+"}";
+gap=mind;
+return v;
+}}if(typeof JSON.stringify!=="function"){JSON.stringify=function(value,replacer,space){var i;
+gap="";
+indent="";
+if(typeof space==="number"){for(i=0;
+i<space;
+i+=1){indent+=" ";
+}}else{if(typeof space==="string"){indent=space;
+}}rep=replacer;
+if(replacer&&typeof replacer!=="function"&&(typeof replacer!=="object"||typeof replacer.length!=="number")){throw new Error("JSON.stringify");
+}return str("",{"":value});
+};
+}if(typeof JSON.parse!=="function"){JSON.parse=function(text,reviver){var j;
+function walk(holder,key){var k,v,value=holder[key];
+if(value&&typeof value==="object"){for(k in value){if(Object.prototype.hasOwnProperty.call(value,k)){v=walk(value,k);
+if(v!==undefined){value[k]=v;
+}else{delete value[k];
+}}}}return reviver.call(holder,key,value);
+}text=String(text);
+cx.lastIndex=0;
+if(cx.test(text)){text=text.replace(cx,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4);
+});
+}if(/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,""))){j=eval("("+text+")");
+return typeof reviver==="function"?walk({"":j},""):j;
+}throw new SyntaxError("JSON.parse");
+};
+}}());
+
+</script>
+<script type="text/javascript" nonce="">
+    $(function() {
+        var problems = {};
+        $.each(problems, function(index, value) {
+            if(index == "main") { // not associated with any one input
+                $("#main_error").text(value);
+            } else {
+                $("#input_" + index).addClass("error");
+            }
+        });
+
+        $("#signin_button").click(function(e){
+            e.stopPropagation();
+            $("#saml_form").submit();
+            return false;
+        });
+
+        $("#saml_form").on("click", ".expandable-container", function(e) {
+            theDiv = e.currentTarget.getAttribute('data-accountIndex');
+            el = document.getElementById(theDiv);
+            img = document.getElementById('image' + theDiv);
+            if (el.style.display == 'none') {
+                el.style.display = '';
+                img.src = '/static/image/down.png';
+            } else {
+                el.style.display = 'none';
+                img.src = '/static/image/up.png';
+            }
+            return false;
+        });
+    });
+</script>
+<style>
+  #container>h1.background{background-position:.1em 0;background-repeat:no-repeat;background-size:contain;color:rgba(0,0,0,0);height:50px;margin-top:10px;margin-left:10px;padding:0;width:84px;background-image:url("data:image/png;base64,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");font-size:1em}
+body{font-size:75%;font-family:Helvetica,Arial,sans-serif;padding:0;margin:0}
+a{color:black}
+a#logo_link{color:transparent;width:84px;height:50px;display:block;font-size:12px}
+input{font:16px / 18px sans-serif}
+form{max-width:800px;margin:0 auto}
+fieldset{margin:0;padding:0;border:0}
+a.more{text-decoration:none;font-size:.8em}
+.textaslabel{border:0;background-color:#fff;font:16px / 18px sans-serif}
+.buttoninput{clear:both;padding-left:240px;padding-top:15px;padding-bottom:15px}
+.checkboxinput{clear:both;padding-top:10px;padding-left:240px}
+.textinput{padding-top:20px;clear:both}
+.textinput label{display:block;clear:left;text-align:right;width:230px;float:left;padding-right:10px;line-height:27px;font-weight:bold;font-size:1.25em}
+form div{padding:0}
+.textinput input{width:250px;float:left}
+.textinput input#mfacode,input#next_mfacode{width:56px;float:left;margin-right:10px}
+.error input{border-color:red}
+.error label{color:red}
+.link{padding-left:240px;font-size:.8em}
+.mainError{padding-left:20px;color:red}
+.mainInfo{padding-left:20px;color:blue}
+.signin-tabs{margin:1.67em 1.67em 0}
+.signin-tabs ul{margin:0;padding:0;width:100%;list-style:none}
+.signin-tabs ul:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+.signin-tabs ul li{margin:0;padding:0;float:left;width:50%}
+.signin-tabs ul li a,.signin-tabs ul li a:visited{display:block;text-align:center;text-decoration:none;margin:0;padding:.93em 0;border:1px solid #BBB;font-weight:bold;color:#000;background:0;background-color:#f1f1f1;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADICAIAAACmkByiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAEZJREFUeNqsw4kNwCAMBDD23zZAgPxdoYew5FZVDZ2ZT0bEdXeHmxlUVaEiAj3n/L73hq61oMwMnXPCxxjXe+9PEhHyE2AAARBFdOaEAOUAAAAASUVORK5CYII=);background-repeat:no-repeat;background-size:100% 100%;-webkit-touch-callout:none}
+.signin-tabs ul li:first-child a{border-radius:.5em 0 0 .5em;-webkit-border-radius:.5em 0 0 .5em;border-right-width:0}
+.signin-tabs ul li:last-child a{border-right:solid 1px #ccc;border-radius:0 .5em .5em 0;-webkit-border-radius:0 .5em .5em 0}
+.signin-tabs ul li a.signin-active{background-color:#dfdfdf;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADICAIAAACmkByiAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAC9JREFUeNpiuHDhAhMDAwPRmJGRkST11DSDHH2k6iFF/UCrHQxupVe8DFD6AwgwAFBMBCxDk7alAAAAAElFTkSuQmCC)}
+.amzn_button{background:-webkit-linear-gradient(top,#fd8 15%,#f49d00 85%);background:-moz-linear-gradient(top,#fd8 15%,#f49d00 85%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0.15,#fd8),color-stop(1.0,#f49d00));background:-webkit-linear-gradient(top,#fd8 15%,#f49d00 85%);border:1px solid #2164a6;margin-right:20px;padding:5px 15px 4px 15px;text-decoration:none;border-radius:4px;-moz-border-radius:4px;-webkit-border-radius:4px;box-shadow:inset 0 0 2px #fff;-webkit-box-shadow:inset 0 0 2px #fff;-moz-box-shadow:inset 0 0 2px #fff;color:#000;font-size:13px}
+.css3button{font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#fff;padding:10px 20px;margin-left:0;margin-right:3px;text-decoration:none;background:-moz-linear-gradient(top,#38d 0,#16b);background:-webkit-gradient(linear,left top,left bottom,from(#38d),to(#16b));-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:1px solid #16b;-moz-box-shadow:0 0 0 rgba(000,000,000,0),inset 0 0 2px rgba(255,255,255,1);-webkit-box-shadow:0 0 0 rgba(000,000,000,0),inset 0 0 2px rgba(255,255,255,1);box-shadow:0 0 0 rgba(000,000,000,0),inset 0 0 2px rgba(255,255,255,1);text-shadow:0 1px 0 rgba(025,084,167,1),0px 0 0 rgba(255,255,255,0);background-color:#16B}
+#content{border-top:1px solid #CCC;min-width:1200px}
+#center-2{margin-top:10px}
+.signin_form{float:left;padding-top:50px;padding-left:5%;width:45%}
+.mfa_form{float:left;padding-left:5%}
+a:focus{color:#ccc}
+#container{margin:0;padding:0}
+#smallprint br{display:none}
+.saml-role{display:block;margin:20px}
+.saml-role-description{margin:0;font-weight:bold;font-size:16px;color:#000;vertical-align:middle}
+.saml-role-invalid{color:#bbb}
+.saml-account{padding-left:20px;margin-bottom:20px}
+.saml-account-name{font-size:18px;display:inline;vertical-align:middle}
+.saml-error{display:inline;color:red;vertical-align:middle;float:right}
+.saml-radio{width:18px;height:18px;vertical-align:middle;s}
+.warningbox{border:thin solid #000;width:50%;margin-left:auto;margin-right:auto}
+.awsc-classification-notice{font-family:Arial,sans-serif;font-size:14px;text-decoration:none;padding:5px;spacing:0;margin:0;background-color:#ff0}
+.awsc-classification-notice-footer{font-family:Arial,sans-serif;font-size:14px;text-decoration:none;padding:5px;spacing:0;margin:0;background-color:#ff0;bottom:0;position:fixed;width:100%}
+.awsc-notice-link{position:absolute;left:10px}
+.awsc-notice{text-align:center}
+a.awsc-notice-link:link{color:#6e6f1b;text-decoration:none}
+a.awsc-notice-link:visited{color:#6e6f1b;text-decoration:none}
+a.awsc-notice-link:hover{color:#6e6f1b;text-decoration:underline}
+a.awsc-notice-link:active{color:#6e6f1b;text-decoration:none}
+.mfaMovedText{padding-left:240px;padding-top:10px}
+p#mfaHeaderMessage{margin-bottom:0;font-size:28px;border-bottom:1px solid #CCC;width:200%}
+.resendButton{font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#444;padding:10px 20px;margin-left:0;text-decoration:none;background:-moz-linear-gradient(top,#fff 0,#dedede);background:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#dedede));-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:1px solid #b8b8b8;-moz-box-shadow:0 0 0 rgba(000,000,000,0),inset 0 0 2px rgba(255,255,255,1);-webkit-box-shadow:0 0 0 rgba(000,000,000,0),inset 0 0 2px rgba(255,255,255,1);box-shadow:0 0 0 rgba(000,000,000,0),inset 0 0 2px rgba(255,255,255,1);text-shadow:0 1px 1px rgba(255,255,255,.75);border-top-color:#dedede;background-color:#dedede}
+.resendButtonDisable{font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#444;opacity:.5;padding:10px 20px;margin-left:0;text-decoration:none;background:-moz-linear-gradient(top,#fff 0,#dedede);background:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#dedede));-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;border:1px solid #b8b8b8;-moz-box-shadow:0 0 0 rgba(000,000,000,0),inset 0 0 2px rgba(255,255,255,1);-webkit-box-shadow:0 0 0 rgba(000,000,000,0),inset 0 0 2px rgba(255,255,255,1);box-shadow:0 0 0 rgba(000,000,000,0),inset 0 0 2px rgba(255,255,255,1);text-shadow:0 1px 1px rgba(255,255,255,.75);border-top-color:#dedede;background-color:#dedede;pointer-events:none;cursor:default}
+.resendButton:visited{color:#444}
+a#cancel_button{font-size:14px;font-weight:bold;font-style:normal;color:#16b}
+a#lost_device{font-size:14px;font-weight:400;font-style:normal;color:#444;line-height:27px}
+.mfaFields{padding-bottom:100px}
+.ui-dialog.feedback-dialog .ui-dialog-titlebar-close:hover,.ui-dialog .ui-dialog-titlebar-close:focus{padding:1px}
+.no-close .ui-dialog-titlebar-close{display:none}
+.awsc-nav-dialog-modal{font-size:12px;line-height:1.5em}
+.awsc-nav-dialog-modal .ui-dialog-title{font-size:13px}
+.awsc-nav-dialog-modal .btn{display:inline-block;padding:4px 14px;margin-bottom:0;font-size:14px;font-weight:bold;line-height:1.5em;color:#444;text-align:center;text-decoration:none;text-shadow:0 1px 1px rgba(255,255,255,0.75);vertical-align:middle;cursor:pointer;background-color:#f2f2f2;background-image:-webkit-linear-gradient(top,#fff,#dedede);background-image:linear-gradient(to bottom,#fff,#dedede);background-repeat:repeat-x;border:1px solid #bbb;border-top-color:#ccc;border-radius:.3em;box-shadow:"0 1px 0 rgba(0, 0, 0, 0.1)"}
+.awsc-nav-dialog-modal .btn.focus,.awsc-nav-dialog-modal .btn:focus,.awsc-nav-dialog-modal .btn.hover,.awsc-nav-dialog-modal .btn:hover{color:#444;text-decoration:none;text-shadow:0 1px 1px rgba(255,255,255,0.75);background-color:#ebebeb;background-image:-webkit-linear-gradient(top,#fff,#ccc);background-image:linear-gradient(to bottom,#fff,#ccc);background-position:0 0;background-repeat:repeat-x}
+.awsc-nav-dialog-modal .btn::-moz-focus-inner{border:0}
+.awsc-nav-dialog-modal .btn.active,.awsc-nav-dialog-modal .btn:active{color:#444;text-shadow:0 -1px 1px rgba(255,255,255,0.75);background-color:#ebebeb;background-image:-webkit-linear-gradient(top,#dedede,#fff);background-image:linear-gradient(to bottom,#dedede,#fff);background-position:0 0;background-repeat:repeat-x;outline:0;box-shadow:"inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05)"}
+.awsc-nav-dialog-modal .btn-primary.active{color:rgba(255,255,255,0.75)}
+.awsc-nav-dialog-modal .btn-primary{color:#fff;text-shadow:0 1px 1px rgba(0,0,0,0.75);background-color:#257acf;background-image:-webkit-linear-gradient(top,#38d,#16b);background-image:linear-gradient(to bottom,#38d,#16b);background-repeat:repeat-x;border:1px solid #16b;border-top-color:#05a}
+.awsc-nav-dialog-modal .btn-primary.focus,.awsc-nav-dialog-modal .btn-primary:focus,.awsc-nav-dialog-modal .btn-primary.hover,.awsc-nav-dialog-modal .btn-primary:hover{color:#fff;text-shadow:0 1px 1px rgba(0,0,0,0.75);background-color:#1f74c9;background-image:-webkit-linear-gradient(top,#38d,#05a);background-image:linear-gradient(to bottom,#38d,#05a);background-repeat:repeat-x}
+.awsc-nav-dialog-modal .btn-primary.active,.awsc-nav-dialog-modal .btn-primary:active{color:#fff;text-shadow:0 -1px 1px rgba(0,0,0,0.75);background-color:#1f74c9;background-image:-webkit-linear-gradient(top,#16b,#38d);background-image:linear-gradient(to bottom,#16b,#38d);background-repeat:repeat-x}
+.awsc-nav-dialog-modal.ui-widget,.awsc-nav-dialog-modal.ui-widget button{font-family:Verdana,Arial,sans-serif}
+.awsc-nav-dialog-modal .ui-widget-header{background-color:#f2f2f2;background-image:-webkit-linear-gradient(top,#fff,#dedede);background-image:linear-gradient(to bottom,#fff,#dedede);background-repeat:repeat-x;border:0;padding:1em 1em}
+.awsc-nav-dialog-modal.ui-dialog{padding:0}
+.awsc-nav-dialog-modal .ui-dialog-buttonpane{margin-top:1em;padding:.5em 1em .5em .4em;border-top:1px solid #ddd;background-color:#f5f5f5}
+.awsc-nav-dialog-modal .ui-dialog-buttonpane button{margin:.5em .4em}
+.messageDiv{padding-left:20px;width:45%}
+.alert{padding:8px 25px 8px 14px;margin:.5em 0 1em 0;text-shadow:0 1px 0 rgba(255,255,255,0.5);background-color:#fffcec;border:1px solid #e07700;border-radius:.3em}
+.alert.alert-info{color:#444;background-color:#f0f9ff;border-color:#16b}
+.alert .imgclass{float:left;margin-left:10px;margin-right:14px;width:20px;height:20px;background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABbUlEQVR4nK3UPUgdQRSG4eeKBH9I/MUuBkxhpWBl2lR2kYABKyEJprEIgaBYWGknaGOjCWrASkiRCKZQEKuQ0sLEwkZsbCIELirRwuLuwDDsXi7oB8vMOfPNO7O7M6fU9m7Hfaq+IF/CEF6gHy0o4w+28Q3XtQL7sJGBUj3Da5xk7V5qqEviUfxKYH3Zjpui3BPs4mM14CC+oDHxXGXtZc7cebyMk+GVG7CJB+mKGMdpzkJB6/iJsxg4hu6CCZMF+aBHeI/psG0YyTHuq3y78DRXgb4KnQAcyDFdJfFFFeBTPIyBbTmmASyhswooVnsMLOcYujCB1hqB5Rh4WOOkIp3hbwzcuiPwe+gE4Ar+JaY9lb97HOVK+Jz4brCYAs/xNjHmXn78T+IpHIUgLg5fMYPZLH4eGyM9jvqrWIgH02ozhwOsoQO9Bbu8xAcspwN55WsLPXiDYZVq06pyLH7jBz7J7m6q0n1X7LQe3lm38dY7Km33QX8AAAAASUVORK5CYII=')}
+.alert .header{font-size:18px;display:inline;color:#16b;padding:4px 0}
+.alert .message{color:#444;margin-left:45px;padding:4px 0;margin-top:0;margin-bottom:0}
+@media screen and (max-width:640px){form{padding:0 20px}
+.textinput{padding-top:5px}
+.textinput label{display:block;float:none;text-align:left;width:auto;line-height:20px}
+.textinput input{clear:both;width:100%;top:0}
+.checkboxinput,.buttoninput,.link,.mfaMovedText{padding-left:0}
+.buttoninput{padding-top:5px}
+#smallprint br{display:block}
+#content{border-top:0}
+}
+
+</style>
+</head>
+<body data-new-gr-c-s-check-loaded="14.1196.0" data-gr-ext-installed="">
+
+<script id="awsc-panorama-bundle" type="text/javascript" src="/static/js/panorama-nav-init.js" data-url="/static/js/awsc-panorama.js" data-config="{'appEntity':'aws-signin','flags':{'disableBusinessMetrics':true, 'enableViewMetrics':true, 'enableCustomMetrics': false},'region':'us-east-1','service':'saml'}"></script>
+
+
+
+
+<div id="container">
+
+  <h1 class="background">Amazon Web Services Login</h1>
+
+  <div id="content">
+
+  <div id="main_error"></div>
+
+  <form id="saml_form" name="saml_form" action="/saml" method="post">
+          <input type="hidden" name="RelayState" value="">
+          <input type="hidden" name="SAMLResponse" value="PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c2FtbDJwOlJlc3BvbnNlIERlc3RpbmF0aW9uPSJodHRwczovL3NpZ25pbi5hd3MuYW1hem9uLmNvbS9zYW1sIiBJRD0iaWQxMjc1NTM5OTAxNjYxMDM3NTc5MzUyODgiIElzc3VlSW5zdGFudD0iMjAyNC0wOS0yNFQxMzoyODowMC4yNjBaIiBWZXJzaW9uPSIyLjAiIHhtbG5zOnNhbWwycD0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOnByb3RvY29sIiB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiPjxzYW1sMjpJc3N1ZXIgRm9ybWF0PSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6bmFtZWlkLWZvcm1hdDplbnRpdHkiIHhtbG5zOnNhbWwyPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXNzZXJ0aW9uIj5odHRwOi8vd3d3Lm9rdGEuY29tL2V4azFoODEzMGZjVjlheUtIMWQ4PC9zYW1sMjpJc3N1ZXI+PGRzOlNpZ25hdHVyZSB4bWxuczpkcz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+PGRzOlNpZ25lZEluZm8+PGRzOkNhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48ZHM6U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjcnNhLXNoYTI1NiIvPjxkczpSZWZlcmVuY2UgVVJJPSIjaWQxMjc1NTM5OTAxNjYxMDM3NTc5MzUyODgiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjZW52ZWxvcGVkLXNpZ25hdHVyZSIvPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiPjxlYzpJbmNsdXNpdmVOYW1lc3BhY2VzIFByZWZpeExpc3Q9InhzIiB4bWxuczplYz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PC9kczpUcmFuc2Zvcm0+PC9kczpUcmFuc2Zvcm1zPjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz48ZHM6RGlnZXN0VmFsdWU+SUpOU21MM2duRW1xeTZVc1owVHFUSE0xZnB3UkVHakdhK1pCYW05Uzl0RT08L2RzOkRpZ2VzdFZhbHVlPjwvZHM6UmVmZXJlbmNlPjwvZHM6U2lnbmVkSW5mbz48ZHM6U2lnbmF0dXJlVmFsdWU+RE1aNmx4NVlET1lwV0Y5dEFXS1lLbVVTMDNDeHVSU3lqV3kzdzlZZExPcXpMS3FMczU1dDJSWm1kM0sxU0tURlFEZnovUnpVcUE4VjRjMDNJR0NydlFzdjVoa0lXdnZXUEMzWTJia0tHTEFDbjM1eFo2czBRM3ZhRnF6cEhhMXVYMGhRN2k4RllXVVhTTGFlUm5CdytqeXBzbFNSV1d3Y2E3bVJLaGt2MFVHTHJlMk5SRVVlZitmenlmRFM0YW5xWW5MVGhhU3hJVCtVbW1oR0s2czM1MEkzeDJ5UUNxbnViYldwYytuVEc2SVd4SmJRK3ZmbjEvZXRMTkM4Z0JrWnVCSlZ4OEtOVk55SG9mak0vZzBuMVlnMVZFUGs5bjdlY1F5UnQ4YkVFdCthWUxaNS9ycmlDMTFhZkYxUFQ1eFQ5L01OSXdvTE5xdjhoTm1hZW8va2lBPT08L2RzOlNpZ25hdHVyZVZhbHVlPjxkczpLZXlJbmZvPjxkczpYNTA5RGF0YT48ZHM6WDUwOUNlcnRpZmljYXRlPk1JSURwRENDQW95Z0F3SUJBZ0lHQVYybXczcUJNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1JR1NNUXN3Q1FZRFZRUUdFd0pWVXpFVE1CRUcKQTFVRUNBd0tRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCd3dOVTJGdUlFWnlZVzVqYVhOamJ6RU5NQXNHQTFVRUNnd0VUMnQwWVRFVQpNQklHQTFVRUN3d0xVMU5QVUhKdmRtbGtaWEl4RXpBUkJnTlZCQU1NQ21WMlpXNTBZbkpwZEdVeEhEQWFCZ2txaGtpRzl3MEJDUUVXCkRXbHVabTlBYjJ0MFlTNWpiMjB3SGhjTk1UY3dPREF6TURZeU1qTTFXaGNOTWpjd09EQXpNRFl5TXpNMFdqQ0JrakVMTUFrR0ExVUUKQmhNQ1ZWTXhFekFSQmdOVkJBZ01Da05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNNRFZOaGJpQkdjbUZ1WTJselkyOHhEVEFMQmdOVgpCQW9NQkU5cmRHRXhGREFTQmdOVkJBc01DMU5UVDFCeWIzWnBaR1Z5TVJNd0VRWURWUVFEREFwbGRtVnVkR0p5YVhSbE1Sd3dHZ1lKCktvWklodmNOQVFrQkZnMXBibVp2UUc5cmRHRXVZMjl0TUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEKc3g2ZzBvOFgzbDIrZGtBWld2YlZ4eG9RUlB1NkpqR1RkaSt2ODFLaVFWZnJlSkE5dFIybkZJZ0FySEIzL2N3RWZSZHFFaHYrcXFQUApiNjFtRlYvV3N6SS9DanBVdHJvNVlzcksvMFRqeVRXVkRudlorU1pLazZmaUo5ZExXaDhwdHFqTlg1djRHZStySGFlVTh4blJYeHppClg2UWdqOU5LTURjazNUNGpobUx3VzEvK2VRRFFpMWYxYTZDSk04VndlYnExV3hrRGtEL1NvU2pmZ2M1c3gxbHJTSzc0UEwza0hHMzEKa1pObjROVVBJMHlDK2lselR4czcybFVvWTZ2U08yTXFjM05MZ0JET3lKTUhkWTdEYWdnRnArbE9QV1UyQmdCZ3gwRXdJTG1lZ0tlbgpJcmVSb3J2TVQwRTJ5YUJBNm9LS1F1WjFDckI3QWF2eFBEWWF0d0lEQVFBQk1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQngvWEVYClVyandIZGZVN3VSN1FaOENhOGxwNjRHS3poTnJScWlVTURyOVZSSXFwWE9BU0xWRm9JdTJ4V0hVcnBRREdMZXlYcjArR0ZlWDhFSmQKTzJzbDMzQm5WRSsrdXJxZFNCZXVxOGRkMjUyZ1U3UWtyOXhQTVVjYUZud0dBY0k4TGRHeGJBcVJDT3c1KzZYd0QvQ05HeXVEUmVaWgpiQklQQnF6eE42bUp6bTBDbnlhS21ZTWhXRjFSeEg0eWNheDd3N0lnS3ltakNMRlJDZWZpaEdJR2c3TnNiMGtiMU5NcUpOeWs0YlJqCm40ckZReTRETWdoRWVLZ29vN2dqVlRScU9MTThxVjNNbHJERmZha2g1WUs1R3lISFNSSC9yb01DQnVOVGVaQzUwUUxUUHFNOGdxYjQKaHlKdzJnNElSSzVCZHAwTllZeVNTZlYycHRtU2tYUEU8L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48L2RzOlNpZ25hdHVyZT48c2FtbDJwOlN0YXR1cyB4bWxuczpzYW1sMnA9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpwcm90b2NvbCI+PHNhbWwycDpTdGF0dXNDb2RlIFZhbHVlPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6c3RhdHVzOlN1Y2Nlc3MiLz48L3NhbWwycDpTdGF0dXM+PHNhbWwyOkFzc2VydGlvbiBJRD0iaWQxMjc1NTM5OTAzMzEzMjM0MDc3NDA0NTYiIElzc3VlSW5zdGFudD0iMjAyNC0wOS0yNFQxMzoyODowMC4yNjBaIiBWZXJzaW9uPSIyLjAiIHhtbG5zOnNhbWwyPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXNzZXJ0aW9uIiB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiPjxzYW1sMjpJc3N1ZXIgRm9ybWF0PSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6bmFtZWlkLWZvcm1hdDplbnRpdHkiIHhtbG5zOnNhbWwyPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXNzZXJ0aW9uIj5odHRwOi8vd3d3Lm9rdGEuY29tL2V4azFoODEzMGZjVjlheUtIMWQ4PC9zYW1sMjpJc3N1ZXI+PGRzOlNpZ25hdHVyZSB4bWxuczpkcz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+PGRzOlNpZ25lZEluZm8+PGRzOkNhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48ZHM6U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjcnNhLXNoYTI1NiIvPjxkczpSZWZlcmVuY2UgVVJJPSIjaWQxMjc1NTM5OTAzMzEzMjM0MDc3NDA0NTYiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjZW52ZWxvcGVkLXNpZ25hdHVyZSIvPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiPjxlYzpJbmNsdXNpdmVOYW1lc3BhY2VzIFByZWZpeExpc3Q9InhzIiB4bWxuczplYz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PC9kczpUcmFuc2Zvcm0+PC9kczpUcmFuc2Zvcm1zPjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz48ZHM6RGlnZXN0VmFsdWU+ckthb1JQRVpRU1d3YjF2T3lSS3hMcWU5QVNWNnhNcjhwY2M0Q25LT2RwOD08L2RzOkRpZ2VzdFZhbHVlPjwvZHM6UmVmZXJlbmNlPjwvZHM6U2lnbmVkSW5mbz48ZHM6U2lnbmF0dXJlVmFsdWU+UEhzdFozMnkzeFZEY1dMUmhidENyeUhnRHY5czRGL2p0d0FNRHF5SkpCWlpXb0lydTNBbFZoNHA3cnpMcVhVRG5UUzh1T3NMd3I3cEhYdGJHenlnRmtwZDBicktkTUZzRm81R3FvelRGZmdMUVl3Mms4THAxSllWbTZ6TTk0WHFCMEhiR0dKb1psNWFjOHN2Y0JWeUc2V2pKVitQRGZtUHRqYW1FNll0di94bWJSd2hWWktKeEt6emx1OEZLMnhkcDhqdWwxQ0VXblZZWFQzNnk1ZHRxWGdQTHI3aHNLNXVDOU9aMm5tbTk0NWhBb0Vmem5IOVU3M1VrNS9xZVlUbVlMTFphaHRPVlRoMndSNklZR1dlWm1SRW1aWFhiTmtIMkRsMEdpQnZObkhscTFQZTF3UEpQRGFud01FN1VjaXJML0NORWFxdkI4TDFOdno0VHFLMW13PT08L2RzOlNpZ25hdHVyZVZhbHVlPjxkczpLZXlJbmZvPjxkczpYNTA5RGF0YT48ZHM6WDUwOUNlcnRpZmljYXRlPk1JSURwRENDQW95Z0F3SUJBZ0lHQVYybXczcUJNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1JR1NNUXN3Q1FZRFZRUUdFd0pWVXpFVE1CRUcKQTFVRUNBd0tRMkZzYVdadmNtNXBZVEVXTUJRR0ExVUVCd3dOVTJGdUlFWnlZVzVqYVhOamJ6RU5NQXNHQTFVRUNnd0VUMnQwWVRFVQpNQklHQTFVRUN3d0xVMU5QVUhKdmRtbGtaWEl4RXpBUkJnTlZCQU1NQ21WMlpXNTBZbkpwZEdVeEhEQWFCZ2txaGtpRzl3MEJDUUVXCkRXbHVabTlBYjJ0MFlTNWpiMjB3SGhjTk1UY3dPREF6TURZeU1qTTFXaGNOTWpjd09EQXpNRFl5TXpNMFdqQ0JrakVMTUFrR0ExVUUKQmhNQ1ZWTXhFekFSQmdOVkJBZ01Da05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNNRFZOaGJpQkdjbUZ1WTJselkyOHhEVEFMQmdOVgpCQW9NQkU5cmRHRXhGREFTQmdOVkJBc01DMU5UVDFCeWIzWnBaR1Z5TVJNd0VRWURWUVFEREFwbGRtVnVkR0p5YVhSbE1Sd3dHZ1lKCktvWklodmNOQVFrQkZnMXBibVp2UUc5cmRHRXVZMjl0TUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEKc3g2ZzBvOFgzbDIrZGtBWld2YlZ4eG9RUlB1NkpqR1RkaSt2ODFLaVFWZnJlSkE5dFIybkZJZ0FySEIzL2N3RWZSZHFFaHYrcXFQUApiNjFtRlYvV3N6SS9DanBVdHJvNVlzcksvMFRqeVRXVkRudlorU1pLazZmaUo5ZExXaDhwdHFqTlg1djRHZStySGFlVTh4blJYeHppClg2UWdqOU5LTURjazNUNGpobUx3VzEvK2VRRFFpMWYxYTZDSk04VndlYnExV3hrRGtEL1NvU2pmZ2M1c3gxbHJTSzc0UEwza0hHMzEKa1pObjROVVBJMHlDK2lselR4czcybFVvWTZ2U08yTXFjM05MZ0JET3lKTUhkWTdEYWdnRnArbE9QV1UyQmdCZ3gwRXdJTG1lZ0tlbgpJcmVSb3J2TVQwRTJ5YUJBNm9LS1F1WjFDckI3QWF2eFBEWWF0d0lEQVFBQk1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQngvWEVYClVyandIZGZVN3VSN1FaOENhOGxwNjRHS3poTnJScWlVTURyOVZSSXFwWE9BU0xWRm9JdTJ4V0hVcnBRREdMZXlYcjArR0ZlWDhFSmQKTzJzbDMzQm5WRSsrdXJxZFNCZXVxOGRkMjUyZ1U3UWtyOXhQTVVjYUZud0dBY0k4TGRHeGJBcVJDT3c1KzZYd0QvQ05HeXVEUmVaWgpiQklQQnF6eE42bUp6bTBDbnlhS21ZTWhXRjFSeEg0eWNheDd3N0lnS3ltakNMRlJDZWZpaEdJR2c3TnNiMGtiMU5NcUpOeWs0YlJqCm40ckZReTRETWdoRWVLZ29vN2dqVlRScU9MTThxVjNNbHJERmZha2g1WUs1R3lISFNSSC9yb01DQnVOVGVaQzUwUUxUUHFNOGdxYjQKaHlKdzJnNElSSzVCZHAwTllZeVNTZlYycHRtU2tYUEU8L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48L2RzOlNpZ25hdHVyZT48c2FtbDI6U3ViamVjdCB4bWxuczpzYW1sMj0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFzc2VydGlvbiI+PHNhbWwyOk5hbWVJRCBGb3JtYXQ9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpuYW1laWQtZm9ybWF0OnVuc3BlY2lmaWVkIj5ib3JqYS5hcmlhc0BldmVudGJyaXRlLmNvbTwvc2FtbDI6TmFtZUlEPjxzYW1sMjpTdWJqZWN0Q29uZmlybWF0aW9uIE1ldGhvZD0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmNtOmJlYXJlciI+PHNhbWwyOlN1YmplY3RDb25maXJtYXRpb25EYXRhIE5vdE9uT3JBZnRlcj0iMjAyNC0wOS0yNFQxMzozMzowMC4yNjBaIiBSZWNpcGllbnQ9Imh0dHBzOi8vc2lnbmluLmF3cy5hbWF6b24uY29tL3NhbWwiLz48L3NhbWwyOlN1YmplY3RDb25maXJtYXRpb24+PC9zYW1sMjpTdWJqZWN0PjxzYW1sMjpDb25kaXRpb25zIE5vdEJlZm9yZT0iMjAyNC0wOS0yNFQxMzoyMzowMC4yNjBaIiBOb3RPbk9yQWZ0ZXI9IjIwMjQtMDktMjRUMTM6MzM6MDAuMjYwWiIgeG1sbnM6c2FtbDI9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphc3NlcnRpb24iPjxzYW1sMjpBdWRpZW5jZVJlc3RyaWN0aW9uPjxzYW1sMjpBdWRpZW5jZT51cm46YW1hem9uOndlYnNlcnZpY2VzPC9zYW1sMjpBdWRpZW5jZT48L3NhbWwyOkF1ZGllbmNlUmVzdHJpY3Rpb24+PC9zYW1sMjpDb25kaXRpb25zPjxzYW1sMjpBdXRoblN0YXRlbWVudCBBdXRobkluc3RhbnQ9IjIwMjQtMDktMjRUMTM6Mjg6MDAuMjYwWiIgU2Vzc2lvbkluZGV4PSJpZDE3MjcxODQ0ODAyNTguODc5MTQ0NjIwIiB4bWxuczpzYW1sMj0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFzc2VydGlvbiI+PHNhbWwyOkF1dGhuQ29udGV4dD48c2FtbDI6QXV0aG5Db250ZXh0Q2xhc3NSZWY+dXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFjOmNsYXNzZXM6UGFzc3dvcmRQcm90ZWN0ZWRUcmFuc3BvcnQ8L3NhbWwyOkF1dGhuQ29udGV4dENsYXNzUmVmPjwvc2FtbDI6QXV0aG5Db250ZXh0Pjwvc2FtbDI6QXV0aG5TdGF0ZW1lbnQ+PHNhbWwyOkF0dHJpYnV0ZVN0YXRlbWVudCB4bWxuczpzYW1sMj0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFzc2VydGlvbiI+PHNhbWwyOkF0dHJpYnV0ZSBOYW1lPSJodHRwczovL2F3cy5hbWF6b24uY29tL1NBTUwvQXR0cmlidXRlcy9Sb2xlIiBOYW1lRm9ybWF0PSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXR0cm5hbWUtZm9ybWF0OnVyaSI+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06OjUzMzI2NzQxMTE4NDpzYW1sLXByb3ZpZGVyL09LVEFfT1JDLGFybjphd3M6aWFtOjo1MzMyNjc0MTExODQ6cm9sZS90bHpfZGV2ZWxvcGVyPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6OTA1MzczMDQ3NzI2OnNhbWwtcHJvdmlkZXIvT0tUQV9QUkQsYXJuOmF3czppYW06OjkwNTM3MzA0NzcyNjpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPmFybjphd3M6aWFtOjowNTgyNjQyMjMzNDE6c2FtbC1wcm92aWRlci9PS1RBX1BSRCxhcm46YXdzOmlhbTo6MDU4MjY0MjIzMzQxOnJvbGUvdGx6X2RldmVsb3Blcjwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06OjY1NDY1NDI1MTE5NjpzYW1sLXByb3ZpZGVyL09LVEFfUFJELGFybjphd3M6aWFtOjo2NTQ2NTQyNTExOTY6cm9sZS90bHpfZGV2ZWxvcGVyPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6ODUwOTk1NTcxNzkyOnNhbWwtcHJvdmlkZXIvT0tUQV9QUkQsYXJuOmF3czppYW06Ojg1MDk5NTU3MTc5Mjpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPmFybjphd3M6aWFtOjo4ODIzNjM5NTIyODY6c2FtbC1wcm92aWRlci9PS1RBX1BSRCxhcm46YXdzOmlhbTo6ODgyMzYzOTUyMjg2OnJvbGUvdGx6X2RldmVsb3Blcjwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06OjQ3MTExMjcxODE1MDpzYW1sLXByb3ZpZGVyL09LVEFfUFJELGFybjphd3M6aWFtOjo0NzExMTI3MTgxNTA6cm9sZS9yb19tb25pdG9yaW5nPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6NTMzMjY3MjcxODU1OnNhbWwtcHJvdmlkZXIvT0tUQV9QUkQsYXJuOmF3czppYW06OjUzMzI2NzI3MTg1NTpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPmFybjphd3M6aWFtOjo2NTQ2NTQ0Njc3OTI6c2FtbC1wcm92aWRlci9PS1RBX1BSRCxhcm46YXdzOmlhbTo6NjU0NjU0NDY3NzkyOnJvbGUvcm9fbW9uaXRvcmluZzwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06Ojk5MjM4MjgxODAzOTpzYW1sLXByb3ZpZGVyL09LVEFfT1JDLGFybjphd3M6aWFtOjo5OTIzODI4MTgwMzk6cm9sZS90bHpfZGV2ZWxvcGVyPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6MTY4NDYzODY4NTk3OnNhbWwtcHJvdmlkZXIvT0tUQV9QUkQsYXJuOmF3czppYW06OjE2ODQ2Mzg2ODU5Nzpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPmFybjphd3M6aWFtOjo1NTU2NzI1Mzc5NDA6c2FtbC1wcm92aWRlci9PS1RBX1BSRCxhcm46YXdzOmlhbTo6NTU1NjcyNTM3OTQwOnJvbGUvdGx6X2RldmVsb3Blcjwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06Ojk5MjM4Mjc0MTYxMzpzYW1sLXByb3ZpZGVyL09LVEFfUFJELGFybjphd3M6aWFtOjo5OTIzODI3NDE2MTM6cm9sZS90bHpfZGV2ZWxvcGVyPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6OTc1MDQ5OTczODQ2OnNhbWwtcHJvdmlkZXIvT0tUQV9PUkMsYXJuOmF3czppYW06Ojk3NTA0OTk3Mzg0Njpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPmFybjphd3M6aWFtOjo5OTIzODI3MzM5ODc6c2FtbC1wcm92aWRlci9PS1RBX1BSRCxhcm46YXdzOmlhbTo6OTkyMzgyNzMzOTg3OnJvbGUvdGx6X2RldmVsb3Blcjwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06Ojk3NTA0OTk2NzkxODpzYW1sLXByb3ZpZGVyL09LVEFfT1JDLGFybjphd3M6aWFtOjo5NzUwNDk5Njc5MTg6cm9sZS9yb19tb25pdG9yaW5nPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6OTA1NDE4NDcwNDc2OnNhbWwtcHJvdmlkZXIvT0tUQV9QUkQsYXJuOmF3czppYW06OjkwNTQxODQ3MDQ3Njpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPmFybjphd3M6aWFtOjowMzk2MTI4NzU5MDU6c2FtbC1wcm92aWRlci9PS1RBX1BSRCxhcm46YXdzOmlhbTo6MDM5NjEyODc1OTA1OnJvbGUvdGx6X2RldmVsb3Blcjwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06Ojc2NzM5NzY4MjAzMDpzYW1sLXByb3ZpZGVyL09LVEFfT1JDLGFybjphd3M6aWFtOjo3NjczOTc2ODIwMzA6cm9sZS90bHpfZGV2ZWxvcGVyPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6NjU0NjU0NjEwMDc0OnNhbWwtcHJvdmlkZXIvT0tUQV9QUkQsYXJuOmF3czppYW06OjY1NDY1NDYxMDA3NDpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPmFybjphd3M6aWFtOjowNTgyNjQzNjg4OTE6c2FtbC1wcm92aWRlci9PS1RBX09SQyxhcm46YXdzOmlhbTo6MDU4MjY0MzY4ODkxOnJvbGUvdGx6X2RldmVsb3Blcjwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06OjQ3MTExMjc0NTk2NjpzYW1sLXByb3ZpZGVyL09LVEFfUFJELGFybjphd3M6aWFtOjo0NzExMTI3NDU5NjY6cm9sZS90bHpfZGV2ZWxvcGVyPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6MjUzNDkwNzc1NTYwOnNhbWwtcHJvdmlkZXIvT0tUQV9PUkMsYXJuOmF3czppYW06OjI1MzQ5MDc3NTU2MDpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPmFybjphd3M6aWFtOjo3NjA2MzkzNTg1NDk6c2FtbC1wcm92aWRlci9PS1RBX1BSRCxhcm46YXdzOmlhbTo6NzYwNjM5MzU4NTQ5OnJvbGUvdGx6X2RldmVsb3Blcjwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06OjgxNjk2ODMzMjg5ODpzYW1sLXByb3ZpZGVyL09LVEFfUFJELGFybjphd3M6aWFtOjo4MTY5NjgzMzI4OTg6cm9sZS90bHpfZGV2ZWxvcGVyPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6NDAwNzc3NzY4ODQwOnNhbWwtcHJvdmlkZXIvT0tUQV9QUkQsYXJuOmF3czppYW06OjQwMDc3Nzc2ODg0MDpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPmFybjphd3M6aWFtOjo4NTE3MjUyMTI5Mjk6c2FtbC1wcm92aWRlci9PS1RBX1BSRCxhcm46YXdzOmlhbTo6ODUxNzI1MjEyOTI5OnJvbGUvdGx6X2RldmVsb3Blcjwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+YXJuOmF3czppYW06OjUzMzI2NzI4NjA5MDpzYW1sLXByb3ZpZGVyL09LVEFfT1JDLGFybjphd3M6aWFtOjo1MzMyNjcyODYwOTA6cm9sZS90bHpfZGV2ZWxvcGVyPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5hcm46YXdzOmlhbTo6MzM2MDY5MTg1NDkwOnNhbWwtcHJvdmlkZXIvT0tUQV9QUkQsYXJuOmF3czppYW06OjMzNjA2OTE4NTQ5MDpyb2xlL3Rsel9kZXZlbG9wZXI8L3NhbWwyOkF0dHJpYnV0ZVZhbHVlPjwvc2FtbDI6QXR0cmlidXRlPjxzYW1sMjpBdHRyaWJ1dGUgTmFtZT0iaHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9TQU1ML0F0dHJpYnV0ZXMvUm9sZVNlc3Npb25OYW1lIiBOYW1lRm9ybWF0PSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXR0cm5hbWUtZm9ybWF0OmJhc2ljIj48c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hIiB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4c2k6dHlwZT0ieHM6c3RyaW5nIj5ib3JqYS5hcmlhc0BldmVudGJyaXRlLmNvbTwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PC9zYW1sMjpBdHRyaWJ1dGU+PHNhbWwyOkF0dHJpYnV0ZSBOYW1lPSJodHRwczovL2F3cy5hbWF6b24uY29tL1NBTUwvQXR0cmlidXRlcy9TZXNzaW9uRHVyYXRpb24iIE5hbWVGb3JtYXQ9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphdHRybmFtZS1mb3JtYXQ6YmFzaWMiPjxzYW1sMjpBdHRyaWJ1dGVWYWx1ZSB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4czpzdHJpbmciPjQzMjAwPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT48L3NhbWwyOkF0dHJpYnV0ZT48L3NhbWwyOkF0dHJpYnV0ZVN0YXRlbWVudD48L3NhbWwyOkFzc2VydGlvbj48L3NhbWwycDpSZXNwb25zZT4=">
+          <input type="hidden" name="name" value="">
+          <input type="hidden" name="portal" value="">
+          <p style="font-size: 16px; padding-left: 20px;">Seleccione una función:</p>
+          <fieldset>
+            <div class="saml-account"> <div class="expandable-container" data-accountindex="0">
+              <img id="image0" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-artist-preprod-760639358549 (760639358549)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="0" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::760639358549:role/tlz_developer" class="saml-radio" id="arn:aws:iam::760639358549:role/tlz_developer">
+                    <label for="arn:aws:iam::760639358549:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="1">
+              <img id="image1" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-artist-prod-336069185490 (336069185490)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="1" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::336069185490:role/tlz_developer" class="saml-radio" id="arn:aws:iam::336069185490:role/tlz_developer">
+                    <label for="arn:aws:iam::336069185490:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="2">
+              <img id="image2" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-event-creation-web-bff-prod-533267271855 (533267271855)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="2" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::533267271855:role/tlz_developer" class="saml-radio" id="arn:aws:iam::533267271855:role/tlz_developer">
+                    <label for="arn:aws:iam::533267271855:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="3">
+              <img id="image3" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-event-listing-preprod-168463868597 (168463868597)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="3" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::168463868597:role/tlz_developer" class="saml-radio" id="arn:aws:iam::168463868597:role/tlz_developer">
+                    <label for="arn:aws:iam::168463868597:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="4">
+              <img id="image4" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-event-listing-prod-555672537940 (555672537940)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="4" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::555672537940:role/tlz_developer" class="saml-radio" id="arn:aws:iam::555672537940:role/tlz_developer">
+                    <label for="arn:aws:iam::555672537940:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="5">
+              <img id="image5" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-event-listing-webapp-preprod-654654610074 (654654610074)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="5" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::654654610074:role/tlz_developer" class="saml-radio" id="arn:aws:iam::654654610074:role/tlz_developer">
+                    <label for="arn:aws:iam::654654610074:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="6">
+              <img id="image6" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-event-listing-webapp-prod-851725212929 (851725212929)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="6" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::851725212929:role/tlz_developer" class="saml-radio" id="arn:aws:iam::851725212929:role/tlz_developer">
+                    <label for="arn:aws:iam::851725212929:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="7">
+              <img id="image7" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-feedback-bff-preprod-992382741613 (992382741613)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="7" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::992382741613:role/tlz_developer" class="saml-radio" id="arn:aws:iam::992382741613:role/tlz_developer">
+                    <label for="arn:aws:iam::992382741613:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="8">
+              <img id="image8" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-feedback-bff-prod-654654251196 (654654251196)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="8" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::654654251196:role/tlz_developer" class="saml-radio" id="arn:aws:iam::654654251196:role/tlz_developer">
+                    <label for="arn:aws:iam::654654251196:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="9">
+              <img id="image9" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-feedback-preprod-905418470476 (905418470476)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="9" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::905418470476:role/tlz_developer" class="saml-radio" id="arn:aws:iam::905418470476:role/tlz_developer">
+                    <label for="arn:aws:iam::905418470476:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="10">
+              <img id="image10" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-feedback-prod-992382733987 (992382733987)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="10" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::992382733987:role/tlz_developer" class="saml-radio" id="arn:aws:iam::992382733987:role/tlz_developer">
+                    <label for="arn:aws:iam::992382733987:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="11">
+              <img id="image11" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-monitoring-preprod-471112718150 (471112718150)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="11" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::471112718150:role/ro_monitoring" class="saml-radio" id="arn:aws:iam::471112718150:role/ro_monitoring">
+                    <label for="arn:aws:iam::471112718150:role/ro_monitoring" class="saml-role-description">ro_monitoring</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="12">
+              <img id="image12" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-monitoring-prod-654654467792 (654654467792)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="12" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::654654467792:role/ro_monitoring" class="saml-radio" id="arn:aws:iam::654654467792:role/ro_monitoring">
+                    <label for="arn:aws:iam::654654467792:role/ro_monitoring" class="saml-role-description">ro_monitoring</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="13">
+              <img id="image13" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-orchestration-attendee-app-992382818039 (992382818039)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="13" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::992382818039:role/tlz_developer" class="saml-radio" id="arn:aws:iam::992382818039:role/tlz_developer">
+                    <label for="arn:aws:iam::992382818039:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="14">
+              <img id="image14" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-orchestration-event-creation-web-bff-533267411184 (533267411184)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="14" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::533267411184:role/tlz_developer" class="saml-radio" id="arn:aws:iam::533267411184:role/tlz_developer">
+                    <label for="arn:aws:iam::533267411184:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="15">
+              <img id="image15" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-orchestration-event-listing-webapp-058264368891 (058264368891)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="15" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::058264368891:role/tlz_developer" class="saml-radio" id="arn:aws:iam::058264368891:role/tlz_developer">
+                    <label for="arn:aws:iam::058264368891:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="16">
+              <img id="image16" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-orchestration-feedback-767397682030 (767397682030)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="16" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::767397682030:role/tlz_developer" class="saml-radio" id="arn:aws:iam::767397682030:role/tlz_developer">
+                    <label for="arn:aws:iam::767397682030:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="17">
+              <img id="image17" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-orchestration-feedback-bff-533267286090 (533267286090)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="17" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::533267286090:role/tlz_developer" class="saml-radio" id="arn:aws:iam::533267286090:role/tlz_developer">
+                    <label for="arn:aws:iam::533267286090:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="18">
+              <img id="image18" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-orchestration-monitoring-975049967918 (975049967918)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="18" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::975049967918:role/ro_monitoring" class="saml-radio" id="arn:aws:iam::975049967918:role/ro_monitoring">
+                    <label for="arn:aws:iam::975049967918:role/ro_monitoring" class="saml-role-description">ro_monitoring</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="19">
+              <img id="image19" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-orchestration-organizer-profile-253490775560 (253490775560)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="19" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::253490775560:role/tlz_developer" class="saml-radio" id="arn:aws:iam::253490775560:role/tlz_developer">
+                    <label for="arn:aws:iam::253490775560:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="20">
+              <img id="image20" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-orchestration-video-975049973846 (975049973846)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="20" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::975049973846:role/tlz_developer" class="saml-radio" id="arn:aws:iam::975049973846:role/tlz_developer">
+                    <label for="arn:aws:iam::975049973846:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="21">
+              <img id="image21" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-organizer-profile-preprod-039612875905 (039612875905)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="21" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::039612875905:role/tlz_developer" class="saml-radio" id="arn:aws:iam::039612875905:role/tlz_developer">
+                    <label for="arn:aws:iam::039612875905:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="22">
+              <img id="image22" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-organizer-profile-prod-850995571792 (850995571792)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="22" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::850995571792:role/tlz_developer" class="saml-radio" id="arn:aws:iam::850995571792:role/tlz_developer">
+                    <label for="arn:aws:iam::850995571792:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="23">
+              <img id="image23" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-review-preprod-816968332898 (816968332898)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="23" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::816968332898:role/tlz_developer" class="saml-radio" id="arn:aws:iam::816968332898:role/tlz_developer">
+                    <label for="arn:aws:iam::816968332898:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="24">
+              <img id="image24" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-review-prod-882363952286 (882363952286)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="24" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::882363952286:role/tlz_developer" class="saml-radio" id="arn:aws:iam::882363952286:role/tlz_developer">
+                    <label for="arn:aws:iam::882363952286:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="25">
+              <img id="image25" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-urgency-signals-preprod-400777768840 (400777768840)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="25" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::400777768840:role/tlz_developer" class="saml-radio" id="arn:aws:iam::400777768840:role/tlz_developer">
+                    <label for="arn:aws:iam::400777768840:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="26">
+              <img id="image26" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-urgency-signals-prod-905373047726 (905373047726)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="26" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::905373047726:role/tlz_developer" class="saml-radio" id="arn:aws:iam::905373047726:role/tlz_developer">
+                    <label for="arn:aws:iam::905373047726:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="27">
+              <img id="image27" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-video-preprod-058264223341 (058264223341)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="27" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::058264223341:role/tlz_developer" class="saml-radio" id="arn:aws:iam::058264223341:role/tlz_developer">
+                    <label for="arn:aws:iam::058264223341:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div><div class="saml-account"> <div class="expandable-container" data-accountindex="28">
+              <img id="image28" src="/static/image/down.png" valign="middle">
+              <div class="saml-account-name">Account: tlz-video-prod-471112745966 (471112745966)</div>
+              </div>
+              <hr style="border: 1px solid #ddd;">
+              <div id="28" class="saml-account">
+                <div class="saml-role clickable-radio">
+                    <input type="radio" name="roleIndex" value="arn:aws:iam::471112745966:role/tlz_developer" class="saml-radio" id="arn:aws:iam::471112745966:role/tlz_developer">
+                    <label for="arn:aws:iam::471112745966:role/tlz_developer" class="saml-role-description">tlz_developer</label>
+                    <span style="clear: both;"></span>
+                </div>
+                 </div></div>
+          </fieldset>
+
+          <br>
+          <div class="buttoninput" id="input_signin_button">
+              <a id="signin_button" rel="noopener noreferrer" class="css3button" href="#" alt="Continue" value="Continue">Iniciar sesión</a>
+          </div>
+
+  </form>
+  </div>
+
+  <br>
+
+
+
+
+
+<div id="smallprint" style="text-align: center;">
+  <div class="textinput" style="text-align: center; font-size: x-small;">
+
+
+    <div class="language-dropdown" style="border-top: 1px solid #ccc; margin-bottom: 12px; padding-top: 1em; text-align: center;">
+
+        <select id="languageSelector">
+
+            <option lang="en" value="en_US">English</option>
+
+            <option lang="de" value="de_DE">Deutsch</option>
+
+            <option lang="es" value="es_ES">Español</option>
+
+            <option lang="fr" value="fr_FR">Français</option>
+
+            <option lang="ja" value="ja">日本語</option>
+
+            <option lang="pt" value="pt_BR">Português</option>
+
+            <option lang="ko" value="ko_KR">한국어</option>
+
+            <option lang="zh-Hans" value="zh_CN">中文(简体)</option>
+
+        </select>
+
+
+        <script type="text/javascript" nonce="">
+            (function() {
+               document.getElementById("languageSelector").addEventListener("change", function () {
+                   document.cookie= ("noflush_locale=" + document.getElementById("languageSelector").value+ "; domain=.amazon.com");
+                   window.location.reload();
+               });
+            })();
+        </script>
+    </div>
+
+    <a class="termsandprivacy" href="https://aws.amazon.com/terms/" rel="noopener noreferrer">Términos de uso</a>
+    <a class="termsandprivacy" href="https://aws.amazon.com/privacy/" rel="noopener noreferrer">Política de privacidad</a><br>
+
+
+        <script type="text/javascript" nonce="">
+          const currentYear = new Date().getFullYear();
+          document.write('&copy; 1996-' + currentYear + ', Amazon Web Services, Inc. o sus empresas afiliadas.');
+        </script>© 1996-2024, Amazon Web Services, Inc. o sus empresas afiliadas.
+
+  </div>
+</div>
+
+</div>
+
+
+
+
+<span id="okta-plugin-message-channel-available" style="display: none;"></span></body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
