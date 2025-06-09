@@ -9,6 +9,21 @@ h2 {
     gap: 1rem;
     width: 75%;
     margin: 1rem 0 auto;
+    width: 100%;
+    padding: 0 3rem;
+    box-sizing: border-box;
+}
+
+#search-bar {
+    width: 75%;
+    padding: 1rem;
+    border-radius: .5rem;
+    border: 1px solid coral;
+}
+
+.search-bar {
+    width: 100%;
+    text-align: center;
 }
 
 @media (min-width: 600px) {
@@ -40,7 +55,8 @@ h2 {
 
     opacity: 0; /* Start with opacity 0 */
     animation: fadeIn 0.3s forwards; /* Apply the fade-in animation */
-    animation-delay: var(--animation-delay, 0s); /* Use CSS variable for delay */
+    animation-delay: 0.1s;
+    /* animation-delay: var(--animation-delay, 0s); Use CSS variable for delay */
 }
 
 #aws-accounts .accountWrapper:nth-child(n) {

@@ -16,12 +16,18 @@ export const TEMPLATES = {
 
     </div>
 </div>
-`
+`,
+  searchBar: `
+  <div class="search-bar">
+    <input type="text" id="search-bar" placeholder="Search">
+  </div>
+  `
 }
 
 export const TemplateNames = {
   button: 'button',
   accountWrapper: 'accountWrapper',
+  searchBar: 'searchBar',
 }
 
 export const getTemplateString = (templateName) => {

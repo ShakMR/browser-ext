@@ -14,7 +14,9 @@ export const createElementWithWrapper =  (template, data) => {
 }
 
 export const createElement = (template, data) => {
-  return createElementWithWrapper(template, data).children[0];
+  const wrapper = createElementWithWrapper(template, data);
+  console.log(wrapper);
+  return wrapper.children[0];
 }
 
 export const addClickListener = (id, fn, container = document) => {

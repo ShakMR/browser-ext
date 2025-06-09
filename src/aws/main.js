@@ -54,9 +54,37 @@ const addAccountButtons = (container, accounts) => {
   });
 }
 
+const handleSearch = (event, force = false) => {
+  const searchTerm = event.target.value.toLowerCase();
+  const shouldAct = searchTerm.length >= 3 || searchTerm.length === 0;
+  if (!force && !shouldAct) {
+    return;
+  }
+
+  const accountWrappers = document.querySelectorAll('.accountWrapper');
+  accountWrappers.forEach(wrapper => {
+    const serviceName = wrapper.querySelector('h2').textContent.toLowerCase();
+    const shouldShow = serviceName.includes(searchTerm);
+    wrapper.style.display = shouldShow ? 'block' : 'none';
+  });
+};
+
 export const main = () => {
   const accounts = getAllAccounts();
+  
+  const wrapper = createDiv('aws-wrapper');
+  const searchBar = createElement(getTemplateString(TemplateNames.searchBar));
+  const searchInput = searchBar.querySelector('#search-bar');
+  searchInput.addEventListener('input', handleSearch);
+  searchInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      handleSearch(event, true);
+    }
+  });
+  wrapper.appendChild(searchBar);
+
   const container = createDiv('aws-accounts');
+
   const projects = Object.keys(accounts);
   for (const serviceName of projects) {
     const serviceAccounts = accounts[serviceName];
@@ -66,7 +94,9 @@ export const main = () => {
     accountContainer.appendChild(rolesContainer);
     container.appendChild(accountContainer);
   }
-  replaceForm(container)
+  wrapper.appendChild(container);
+  replaceForm(wrapper)
+  searchInput.focus();
 }
 
 main();
