@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Heap Live Data Presets",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Save and apply filter presets for Heap Live Data.",
   "permissions": [
     "storage",
@@ -10,9 +10,15 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://heapanalytics.com/*"],
-      "js": ["content.js"],
-      "css": ["styles.css"],
+      "matches": [
+        "https://heapanalytics.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
       "run_at": "document_idle"
     }
   ],
@@ -24,4 +30,4 @@
   "action": {
     "default_title": "Heap Presets"
   }
-} 
+}
