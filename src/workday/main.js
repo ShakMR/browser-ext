@@ -1,12 +1,12 @@
 import {createButton, createDiv, createElementFromTemplate, createIconButton} from "../elementUtils";
-import {addToDom, injectStyles} from "../dom";
+import {addToDom} from "../dom";
 import icon from './icons/icon';
 import chevron from "./icons/chevron";
 import {writeTimeTable} from "./workday_timesheets";
 import daySelector from './day_selector';
 import {default as daySelectorTemplate} from './templates/days-selector.html';
 
-import styles from "./workday.css";
+import "./workday.css";
 
 const addListenersForCheckboxes = (container) => {
     const checkboxes = container.querySelectorAll('input[type="checkbox"]');
@@ -49,5 +49,3 @@ const dragger = createIconButton('workday-timesheets-dragger', chevron, () => {h
 hiddenPanel.appendChild(dragger);
 hiddenPanel.appendChild(wrapper);
 addToDom(hiddenPanel);
-injectStyles(styles);
-injectStyles(daySelector);
