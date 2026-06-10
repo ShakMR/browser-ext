@@ -4,9 +4,9 @@
   "description": "My webpack project",
   "main": "workday_timesheets.js",
   "scripts": {
-    "build": "webpack --mode=production --node-env=production",
-    "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production --node-env=production",
+    "build": "node scripts/set-dev-manifest-version.js prod && webpack --mode=production --node-env=production",
+    "build:dev": "node scripts/set-dev-manifest-version.js dev && webpack --mode=development",
+    "build:prod": "node scripts/set-dev-manifest-version.js prod && webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
     "bundle:extension": "./scripts/bundle.sh",
     "bundle:clean": "./scripts/clean.sh"

@@ -1,5 +1,6 @@
 import {SELECTORS} from "./selectors";
 import {createDiv, hideElement, replaceTemplate} from "../elementUtils";
+import {injectStyles} from "../dom";
 import styles from "./aws.css";
 
 export const hideForm = () => {
@@ -21,10 +22,6 @@ export const createElement = (template, data) => {
 
 export const addClickListener = (id, fn, container = document) => {
   container.querySelector(`#${id}`).addEventListener('click', fn);
-}
-
-const injectStyles = (styles) => {
-  document.head.innerHTML = document.head.innerHTML + styles;
 }
 
 export const replaceForm = (element) => {
