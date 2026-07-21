@@ -87,9 +87,11 @@ h2 {
     box-shadow: 0 0 1px grey;
 }
 
-.roleButton sub {
-    visibility: hidden;
-    position: absolute;
+.roleButton-accountId {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    opacity: 0.75;
 }
 
 .rolesContainer {

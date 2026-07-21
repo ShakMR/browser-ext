@@ -64,7 +64,11 @@ const handleSearch = (event, force = false) => {
   const accountWrappers = document.querySelectorAll('.accountWrapper');
   accountWrappers.forEach(wrapper => {
     const serviceName = wrapper.querySelector('h2').textContent.toLowerCase();
-    const shouldShow = serviceName.includes(searchTerm);
+    const accountIds = Array.from(wrapper.querySelectorAll('.roleButton-accountId'))
+      .map((element) => element.textContent.toLowerCase());
+    const matchesService = serviceName.includes(searchTerm);
+    const matchesAccountId = accountIds.some((accountId) => accountId.includes(searchTerm));
+    const shouldShow = matchesService || matchesAccountId;
     wrapper.style.display = shouldShow ? 'block' : 'none';
   });
 };

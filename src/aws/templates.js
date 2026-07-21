@@ -3,7 +3,7 @@ export const TEMPLATES = {
 <div>
     <button class="roleButton" id="{{roleId}}" style="background-color:{{bgc}}">
         {{stage}}
-        <sub>{{name}}</sub>
+        <span class="roleButton-accountId">{{accountId}}</span>
     </button>
 </div>
 `,

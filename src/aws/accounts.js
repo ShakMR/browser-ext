@@ -9,6 +9,7 @@ const ID_SEPARATOR = '__';
  * @property {string} roleDescription
  * @property {string} stage
  * @property {string} service
+ * @property {string} accountId
  * @property {string} roleId
  *
  * @param wrapper
@@ -48,12 +49,14 @@ const extractServiceAccountInfo = (name) => {
     return {
       service: 'unknown',
       stage: 'unknown',
+      accountId: '',
     }
   }
 
   return {
     service: match[1],
     stage: match[2],
+    accountId: match[3],
   }
 }
 
@@ -68,12 +71,14 @@ const extractOrchestrationAccountInfo = (name) => {
     return {
       service: 'unknown',
       stage: 'unknown',
+      accountId: '',
     }
   }
 
   return {
     service: match[1],
     stage: 'orchestration',
+    accountId: match[2],
   }
 }
 
