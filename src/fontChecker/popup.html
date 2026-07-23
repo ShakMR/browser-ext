@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Font checker settings</title>
+  </head>
+  <body>
+    <main class="settings">
+      <h1>Font checker</h1>
+      <label class="toggle-row" for="enabled">
+        <span>Show floating checker</span>
+        <input id="enabled" type="checkbox" />
+      </label>
+      <form id="settings-form">
+        <label for="font-substring">Font substring</label>
+        <div class="input-row">
+          <input id="font-substring" type="text" autocomplete="off" required />
+          <button type="submit">Save</button>
+        </div>
+        <p class="hint">Case-insensitive. “Neue” also matches “Neue Plak”.</p>
+        <p
+          id="save-status"
+          class="save-status"
+          role="status"
+          aria-live="polite"
+        ></p>
+      </form>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

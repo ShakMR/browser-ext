@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Font Checker</title>
+  </head>
+  <body>
+    <main>
+      <header class="toolbar">
+        <div>
+          <h1>Font Checker</h1>
+          <p>Results from the latest floating-button scan.</p>
+        </div>
+        <button id="refresh" type="button">Refresh</button>
+      </header>
+      <p id="status" class="status waiting" role="status" aria-live="polite">
+        Waiting for a scan…
+      </p>
+      <ol id="matches" class="match-list"></ol>
+    </main>
+    <script src="devtools-panel.js"></script>
+  </body>
+</html>
