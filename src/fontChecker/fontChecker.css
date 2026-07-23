@@ -1,0 +1,49 @@
+#font-substring-checker-button {
+  all: initial;
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 2147483647;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 2px solid #475569;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.28);
+  color: #0f172a;
+  cursor: pointer;
+  font:
+    700 16px/1 Arial,
+    sans-serif;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+#font-substring-checker-button:hover {
+  transform: scale(1.06);
+}
+
+#font-substring-checker-button:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+#font-substring-checker-button.no-match {
+  border-color: #166534;
+  background: #22c55e;
+  color: #052e16;
+}
+
+#font-substring-checker-button.has-match {
+  border-color: #991b1b;
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.font-substring-checker-match {
+  border: 1px solid #ef4444 !important;
+}

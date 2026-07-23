@@ -1,0 +1,100 @@
+:root {
+  color-scheme: light dark;
+  font:
+    13px/1.4 system-ui,
+    sans-serif;
+}
+
+body {
+  margin: 0;
+  color: light-dark(#0f172a, #e2e8f0);
+  background: light-dark(#ffffff, #1f1f1f);
+}
+
+main {
+  padding: 16px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+h1,
+.toolbar p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 18px;
+}
+
+.toolbar p {
+  color: light-dark(#475569, #94a3b8);
+}
+
+button {
+  padding: 6px 12px;
+  border: 1px solid light-dark(#94a3b8, #64748b);
+  border-radius: 4px;
+  background: light-dark(#f8fafc, #334155);
+  color: inherit;
+  cursor: pointer;
+}
+
+.status {
+  margin: 16px 0;
+  padding: 10px 12px;
+  border-left: 4px solid;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+.status.waiting {
+  border-color: #64748b;
+  background: light-dark(#f1f5f9, #334155);
+}
+
+.status.success {
+  border-color: #16a34a;
+  background: light-dark(#dcfce7, #14532d);
+  color: light-dark(#166534, #dcfce7);
+}
+
+.status.error {
+  border-color: #dc2626;
+  background: light-dark(#fee2e2, #7f1d1d);
+  color: light-dark(#991b1b, #fee2e2);
+}
+
+.match-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.match-list li {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid light-dark(#cbd5e1, #475569);
+  border-radius: 4px;
+}
+
+.match-list code {
+  color: light-dark(#be123c, #fda4af);
+  font-weight: 700;
+}
+
+.font-family {
+  color: light-dark(#475569, #94a3b8);
+}
+
+.match-list p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

@@ -8,11 +8,14 @@ const DotEnv = require('dotenv-webpack');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const isExtension = {
-  aws: true,
-  switch: true,
-  panel: false,
-  workday: true,
+const extensionOutputs = {
+  aws: '../extensions/aws/content.js',
+  switch: '../extensions/switch/content.js',
+  workday: '../extensions/workday/content.js',
+  fontChecker: '../extensions/font-checker/content.js',
+  fontCheckerPopup: '../extensions/font-checker/popup.js',
+  fontCheckerDevtools: '../extensions/font-checker/devtools.js',
+  fontCheckerDevtoolsPanel: '../extensions/font-checker/devtools-panel.js',
 };
 
 const config = {
@@ -21,12 +24,16 @@ const config = {
     switch: './src/switch/main.js',
     panel: './src/eventPanel.js',
     aws: './src/aws/main.js',
+    fontChecker: './src/fontChecker/main.js',
+    fontCheckerPopup: './src/fontChecker/popup.js',
+    fontCheckerDevtools: './src/fontChecker/devtools.js',
+    fontCheckerDevtoolsPanel: './src/fontChecker/devtoolsPanel.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: (pathData) => {
-      if (isExtension[pathData.chunk.name]) {
-        return `../extensions/${pathData.chunk.name}/content.js`;
+      if (extensionOutputs[pathData.chunk.name]) {
+        return extensionOutputs[pathData.chunk.name];
       }
       return '[name].js';
     }
@@ -43,6 +50,15 @@ const config = {
       },
       {
         test: /\.html$/i,
+        include: path.resolve(__dirname, 'src/fontChecker'),
+        type: 'asset/resource',
+        generator: {
+          filename: '../extensions/font-checker/[name][ext]',
+        },
+      },
+      {
+        test: /\.html$/i,
+        exclude: path.resolve(__dirname, 'src/fontChecker'),
         loader: "raw-loader",
       },
       {
