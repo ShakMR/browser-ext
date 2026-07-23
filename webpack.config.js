@@ -24,10 +24,10 @@ const config = {
     switch: './src/switch/main.js',
     panel: './src/eventPanel.js',
     aws: './src/aws/main.js',
-    fontChecker: './src/fontChecker/main.js',
-    fontCheckerPopup: './src/fontChecker/popup.js',
-    fontCheckerDevtools: './src/fontChecker/devtools.js',
-    fontCheckerDevtoolsPanel: './src/fontChecker/devtoolsPanel.js',
+    fontChecker: './src/font-checker/main.js',
+    fontCheckerPopup: './src/font-checker/popup.js',
+    fontCheckerDevtools: './src/font-checker/devtools.js',
+    fontCheckerDevtoolsPanel: './src/font-checker/devtoolsPanel.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -50,7 +50,7 @@ const config = {
       },
       {
         test: /\.html$/i,
-        include: path.resolve(__dirname, 'src/fontChecker'),
+        include: path.resolve(__dirname, 'src/font-checker'),
         type: 'asset/resource',
         generator: {
           filename: '../extensions/font-checker/[name][ext]',
@@ -58,7 +58,7 @@ const config = {
       },
       {
         test: /\.html$/i,
-        exclude: path.resolve(__dirname, 'src/fontChecker'),
+        exclude: path.resolve(__dirname, 'src/font-checker'),
         loader: "raw-loader",
       },
       {
