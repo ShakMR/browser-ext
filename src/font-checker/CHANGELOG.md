@@ -1,3 +1,4 @@
+
 ## Version 1.1.0
 
 Add a DevTools panel for the latest scan results and matched elements.
